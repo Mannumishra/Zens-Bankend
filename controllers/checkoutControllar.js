@@ -101,7 +101,7 @@ const verifyPayment = async (req, res) => {
             // Payment verified successfully, update the checkout status
             const updatedCheckout = await Checkout.findOneAndUpdate(
                 { transactionId: razorpay_order_id },
-                { paymentStatus: 'Paid', orderStatus: 'Confirmed' },
+                { paymentStatus: 'Successfull', orderStatus: 'Confirmed' },
                 { new: true }
             );
             if (!updatedCheckout) {
