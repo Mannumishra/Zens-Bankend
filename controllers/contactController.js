@@ -1,16 +1,11 @@
-// controllers/contactController.js
-
 const Contact = require('../models/Contact');
+const { userEmailTemplate, adminEmailTemplate } = require('../utils/conatctMailTemplate');
+const { transporter } = require('../utils/mailTransporter');
 
-// CREATE a new contact submission
 const createContact = async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
-
-        // Array to store validation errors
         const errors = [];
-
-        // Validation checks
         if (!name) {
             errors.push("Name is required");
         }
@@ -26,12 +21,9 @@ const createContact = async (req, res) => {
         if (!message) {
             errors.push("Message is required");
         }
-
-        // If there are validation errors, send the errors array in the response
         if (errors.length > 0) {
             return res.status(400).json({ success: false, errors });
         }
-
         const existingContact = await Contact.findOne({
             $or: [
                 { email: email }, { phone: phone }
@@ -43,10 +35,23 @@ const createContact = async (req, res) => {
                 message: existingContact.email === email ? "This email ID already exists." : "This phone number already exists."
             });
         }
-        // Create a new contact if no validation errors
         const newContact = new Contact({ name, email, phone, subject, message });
         const savedContact = await newContact.save();
+        // Send confirmation email to the user
+        await transporter.sendMail({
+            from: process.env.MAIL_SEND, // Replace with your email
+            to: email,
+            subject: 'Zens - Thank You for Contacting Us!',
+            html: userEmailTemplate(name)
+        });
 
+        // Send notification email to the admin
+        await transporter.sendMail({
+            from: process.env.MAIL_SEND, // Replace with your email
+            to: process.env.MAIL_SEND, // Replace with admin email
+            subject: 'Zens - New Contact Submission',
+            html: adminEmailTemplate(name, email, phone, subject, message)
+        });
         res.status(200).json({ success: true, message: 'Contact submission created successfully.', contact: savedContact });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -54,7 +59,6 @@ const createContact = async (req, res) => {
 };
 
 
-// READ all contact submissions
 const getContacts = async (req, res) => {
     try {
         const contacts = await Contact.find();
@@ -64,7 +68,6 @@ const getContacts = async (req, res) => {
     }
 };
 
-// READ a single contact submission by ID
 const getContactById = async (req, res) => {
     try {
         const contact = await Contact.findById(req.params.id);
@@ -77,7 +80,6 @@ const getContactById = async (req, res) => {
     }
 };
 
-// UPDATE a contact submission by ID
 const updateContact = async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body;
@@ -98,7 +100,6 @@ const updateContact = async (req, res) => {
     }
 };
 
-// DELETE a contact submission by ID
 const deleteContact = async (req, res) => {
     try {
         const deletedContact = await Contact.findByIdAndDelete(req.params.id);
