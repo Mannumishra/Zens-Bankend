@@ -12,6 +12,7 @@ const productRouter = require('./routes/productRouter');
 const bannerRouter = require('./routes/bannerRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
 const userRouter = require('./routes/userRouter');
+const Contactrouter = require('./routes/contactRoutes');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api", productRouter);
 app.use("/api", bannerRouter);
 app.use("/api", checkoutRouter);
 app.use("/api", userRouter);
+app.use("/api", Contactrouter);
 
 // Connect to the database
 connectDb();
