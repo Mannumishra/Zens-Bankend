@@ -215,8 +215,30 @@ const deleteProduct = async (req, res) => {
 };
 
 
+const getProductByProductName = async(req,res)=>{
+    try {
+        const {name} = req.params
+        const data = await Product.findOne({productName :name})
+        if(!data){
+            return res.status(404).json({
+                success:false,
+                message:"Product Not Found"
+            })
+        }
+        res.status(200).json({
+            success:true,
+            message:"Product Found",
+            data:data
+        })
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:"Internal server error",
+        })
+    }
+}
 
 module.exports = {
-    createProduct, getProducts, getProductById, updateProduct, deleteProduct
+    createProduct, getProducts, getProductById, updateProduct, deleteProduct ,getProductByProductName
 }
 

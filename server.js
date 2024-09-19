@@ -37,6 +37,7 @@ app.use('/api/', apiLimiter);
 
 app.use(cors())
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set(express.static("uploads"))
 app.use("/api", categoryRouter);
 app.use("/api", productCategoryRouter);

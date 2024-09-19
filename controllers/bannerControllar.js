@@ -28,8 +28,8 @@ const createBanner = async (req, res) => {
                 message: "Image upload failed",
             });
         }
-        const { active } = req.body;
-        const newBanner = new Banner({ image, active });
+        const { name, active } = req.body;
+        const newBanner = new Banner({ image, active, name });
         await newBanner.save();
         return res.status(200).json({
             success: true,

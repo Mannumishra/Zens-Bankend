@@ -68,17 +68,12 @@ const checkoutSchema = new mongoose.Schema({
     transactionId: {
         type: String
     },
-    // orderStatus: {
-    //     type: String,
-    //     default: "Order Is Placed"
-    // },
     paymentStatus: {
         type: String,
         default: 'Pending'
     },
     orderStatus: {
         type: String,
-        // enum: ['Order Is Placed', 'Confirmed', 'Cancelled'],
         default: 'Order Is Placed'
     },
     paymentMode: {
@@ -86,10 +81,6 @@ const checkoutSchema = new mongoose.Schema({
         enum: ['Online Payment', 'Cash on Delivery'],
         default: "Online Payment"
     },
-    // paymentStatus: {
-    //     type: String,
-    //     default: "pending"
-    // },
     orderDate: {
         type: Date,
         default: Date.now
